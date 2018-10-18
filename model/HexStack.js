@@ -3,7 +3,7 @@
  * numbers (possibly with a fixed word size).
  */
 
-class HexStack {
+export default class HexStack {
   constructor (iterable) {
     this.values = []
     if (typeof iterable !== 'undefined' && iterable !== null) {
