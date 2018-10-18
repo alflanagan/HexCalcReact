@@ -1,0 +1,13 @@
+{
+    "env": {
+      "node": true,
+      "jest": true
+    },
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": 9,
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
+}
