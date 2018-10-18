@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Hex Calculator",
-    "description": "RPN calculator for hexidecimal.",
+    "description": "RPN calculator for hexadecimal values.",
     "slug": "hex-calc-rpn",
     "privacy": "public",
     "sdkVersion": "30.0.0",
