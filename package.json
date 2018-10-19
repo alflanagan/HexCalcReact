@@ -1,5 +1,5 @@
 {
-  "name": "empty-project-template",
+  "name": "hex-calc-react",
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "scripts": {
@@ -7,7 +7,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "eject": "expo eject",
-    "test": "jest"
+    "test": "standard && jest"
   },
   "dependencies": {
     "expo": "^30.0.1",
@@ -22,6 +22,9 @@
   "standard": {
     "env": {
       "jest": true
-    }
+    },
+    "globals": [
+      "BigInt"
+    ]
   }
 }

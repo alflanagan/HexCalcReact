@@ -13,7 +13,6 @@
 // instead of `new HexStack()` say
 // `Object.create(HexStack).init()`
 
-
 export default {
   init (iterable) {
     this.values = []

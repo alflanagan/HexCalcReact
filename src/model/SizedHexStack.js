@@ -12,10 +12,7 @@
 
 // instead of `new HexStack()` say
 // `Object.create(HexStack).init()`
-
-
-export default SizedHexStack = {
-
+export default {
 /**
  * Set up this object.
  * @param  {Iterable}  iterable      An iterable producing values to be pushed onto this stack.
