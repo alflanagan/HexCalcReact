@@ -1,6 +1,6 @@
 import React from 'react'
 import { Alert, StatusBar, StyleSheet, Text, ToolbarAndroid, View } from 'react-native'
-import CalcStackDisplay from './components/CalcStackDisplay'
+import CalcStackDisplay from './src/components/CalcStackDisplay'
 
 export default class App extends React.Component {
   constructor (props) {
@@ -31,7 +31,7 @@ export default class App extends React.Component {
         }} />
         <ToolbarAndroid style={styles.toolbar}
           title='Hex Calc RPN'
-          actions={[{ title: 'Settings', icon: require('./assets/ic_menu_preferences.png'), show: 'always' }]}
+          actions={[{ title: 'Settings', icon: require('./src/assets/ic_menu_preferences.png'), show: 'always' }]}
           titleColor='white'
           onActionSelected={this.onActionSelected.bind(this)} />
         <CalcStackDisplay />
