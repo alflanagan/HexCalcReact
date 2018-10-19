@@ -1,6 +1,6 @@
 # HexCalcReact
 
-[![Travis](https://img.shields.io/travis/alflanagan/HexCalcReact.svg?style=popout)](https://travis-ci.com/alflanagan/HexCalcReact)
+[![Travis](https://travis-ci.com/alflanagan/HexCalcReact.svg?branch=master)](https://travis-ci.com/alflanagan/HexCalcReact)
 [![Github All Releases](https://img.shields.io/github/downloads/alflanagan/HexCalcReact/total.svg?style=popout)](https://github.com/alflanagan/HexCalcReact)
 [![GitHub issues](https://img.shields.io/github/issues/alflanagan/HexCalcReact.svg?style=popout)](https://github.com/alflanagan/HexCalcReact/issues)
 
