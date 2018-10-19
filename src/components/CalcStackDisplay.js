@@ -43,7 +43,8 @@ const styles = StyleSheet.create(
   },
   defaultText: {
     flex: 1,
-    fontFamily: 'monospace'
+    fontFamily: 'monospace',
+    textAlign: 'right'
   }
   }
 )

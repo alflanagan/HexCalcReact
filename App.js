@@ -1,6 +1,8 @@
 import React from 'react'
-import { Alert, StatusBar, StyleSheet, Text, ToolbarAndroid, View } from 'react-native'
+import { Alert, StatusBar, StyleSheet, ToolbarAndroid, View } from 'react-native'
 import CalcStackDisplay from './src/components/CalcStackDisplay'
+import CalcInputArea from './src/components/CalcInputArea'
+import CalcButtonDisplay from './src/components/CalcButtonDisplay'
 
 export default class App extends React.Component {
   constructor (props) {
@@ -35,7 +37,8 @@ export default class App extends React.Component {
           titleColor='white'
           onActionSelected={this.onActionSelected.bind(this)} />
         <CalcStackDisplay />
-        <Text>{this.state.message}</Text>
+        <CalcInputArea />
+        <CalcButtonDisplay />
       </View>
     )
   }
