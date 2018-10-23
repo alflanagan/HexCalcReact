@@ -3,21 +3,36 @@
  */
 
 import React from 'react'
-import { Alert, Button } from 'react-native'
+import { Alert, Button, View } from 'react-native'
+import * as R from 'ramda'
 
 export default class CalcButtonDisplay extends React.Component {
   constructor (props) {
     super(props)
-    this.count = 0
+    this.buttons = props.buttons || ['O', 'o', 'p', 's']
+    this.backgroundColor = props.backgroundColor || '#FFFFFF'
+    this.maxHeight = props.maxHeight || 45
+  }
+
+  buttonFor (key) {
+    return <View marginHorizontal={3} key={key}>
+      <Button
+        title={key}
+        onPress={R.partial(this.handlePress, [key])} />
+    </View>
   }
 
   render () {
-    return <Button
-      title='A'
-      onPress={this.handlePress} />
+    return <View flex={1.0}
+      flexDirection='row'
+      marginHorizontal={5}
+      backgroundColor={this.backgroundColor}
+      maxHeight={45}>
+      { this.buttons.map((key) => this.buttonFor(key)) }
+    </View>
   }
 
-  handlePress (event) {
-    Alert.alert('Button pressed')
+  handlePress (key, event) {
+    Alert.alert(key + ' Button pressed')
   }
 }

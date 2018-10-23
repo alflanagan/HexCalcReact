@@ -38,7 +38,12 @@ export default class App extends React.Component {
           onActionSelected={this.onActionSelected.bind(this)} />
         <CalcStackDisplay />
         <CalcInputArea />
-        <CalcButtonDisplay />
+        <View flex={1.0} flexDirection='column' marginTop={5}>
+          <CalcButtonDisplay buttons={['C', 'D', 'E', 'F', '*']} />
+          <CalcButtonDisplay buttons={['8', '9', 'A', 'B', '/']} />
+          <CalcButtonDisplay buttons={['4', '5', '6', '7', '+']} />
+          <CalcButtonDisplay buttons={['1', '2', '3', '4', '-']} />
+        </View>
       </View>
     )
   }
