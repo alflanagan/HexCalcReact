@@ -1,30 +1,36 @@
-/**
- * A React component to display the calculator's stack to the user.
- */
-
 import React from 'react'
 import { ScrollView, StyleSheet, Text } from 'react-native'
+import { isNil, unless } from 'ramda'
 
+/**
+ * A React component to display the calculator's stack to the user.
+ *
+ * props:
+ *   stack - a string of hex values separated by '\n'
+ */
 export default class CalcStackDisplay extends React.Component {
   constructor (props) {
     super(props)
-    this.props = props
     this.state = {
-      stack: this.props.stack || ['123ABCD', 'ABC123']
+      stack: unless(isNil, () => '', () => this.props.stack)
     }
   }
 
-  newStack (stackAsArray) {
-    this.setState({
-      stack: stackAsArray
-    })
+  get stack () {
+    return this.state.stack
   }
 
   render () {
     let counter = 0
+    let parts = []
+    if (typeof this.state.stack === 'string') {
+      parts = this.state.stack.split('\n')
+    } else {
+      parts = [`this.state.stack is ${this.state.stack}`]
+    }
     return (
       <ScrollView style={styles.mainView}>
-        {this.state.stack.map(value => <Text style={styles.defaultText} key={counter++}>{value}</Text>)}
+        {parts.map(value => <Text style={styles.defaultText} key={counter++}>{value}</Text>)}
       </ScrollView>)
   }
 }

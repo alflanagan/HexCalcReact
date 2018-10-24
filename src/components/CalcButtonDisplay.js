@@ -4,21 +4,24 @@
 
 import React from 'react'
 import { Alert, Button, View } from 'react-native'
-import * as R from 'ramda'
+import { defaultTo, partial, not, any, isNil } from 'ramda'
 
 export default class CalcButtonDisplay extends React.Component {
   constructor (props) {
     super(props)
-    this.buttons = props.buttons || ['O', 'o', 'p', 's']
-    this.backgroundColor = props.backgroundColor || '#FFFFFF'
-    this.maxHeight = props.maxHeight || 45
+    this.state = {
+      buttons: defaultTo(['O', 'o', 'p', 's'], props.buttons),
+      backgroundColor: defaultTo('#FFFFFF', props.backgroundColor),
+      maxHeight: defaultTo(45, props.maxHeight),
+      onPress: defaultTo(() => {}, props.onPress)
+    }
   }
 
   buttonFor (key) {
     return <View marginHorizontal={3} key={key}>
       <Button
         title={key}
-        onPress={R.partial(this.handlePress, [key])} />
+        onPress={partial(this.handlePress.bind(this), [key])} />
     </View>
   }
 
@@ -26,13 +29,17 @@ export default class CalcButtonDisplay extends React.Component {
     return <View flex={1.0}
       flexDirection='row'
       marginHorizontal={5}
-      backgroundColor={this.backgroundColor}
+      backgroundColor={this.state.backgroundColor}
       maxHeight={45}>
-      { this.buttons.map((key) => this.buttonFor(key)) }
+      { this.state.buttons.map((key) => this.buttonFor(key)) }
     </View>
   }
 
   handlePress (key, event) {
-    Alert.alert(key + ' Button pressed')
+    if (not(any(isNil(this.state), isNil(this.state.onPress)))) {
+      this.state.onPress(key, event)
+    } else {
+      Alert.alert('No button handler assigned!')
+    }
   }
 }
