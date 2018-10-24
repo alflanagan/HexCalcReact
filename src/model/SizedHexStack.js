@@ -10,8 +10,8 @@
 // Javascript actually implements things, unlike the "standard" use of `new` and `prototype`,
 // even with the new `class` syntax
 
-// instead of `new HexStack()` say
-// `Object.create(HexStack).init()`
+// instead of `new SizedHexStack()` say
+// `Object.create(SizedHexStack).init()`
 export default {
 /**
  * Set up this object.
