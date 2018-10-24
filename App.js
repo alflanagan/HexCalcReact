@@ -3,19 +3,36 @@ import { Alert, StatusBar, StyleSheet, ToolbarAndroid, View } from 'react-native
 import CalcStackDisplay from './src/components/CalcStackDisplay'
 import CalcInputArea from './src/components/CalcInputArea'
 import CalcButtonDisplay from './src/components/CalcButtonDisplay'
+import DataModel from './src/model/DataModel'
 
 export default class App extends React.Component {
   constructor (props) {
     super(props)
+    this.model = new DataModel(false, '0')
     this.state = {
-      message: 'Nothing has happened'
+      message: 'Nothing has happened',
+      input: this.model.value,
+      stackDisp: this.model.stack.toString()
     }
   }
 
+  /**
+   * triggered when an action is selected from the menu
+   * @param  {[type]} position [description]
+   * @return {[type]}          [description]
+   */
   onActionSelected (position) {
     Alert.alert('onActionSelected')
-    this.setState(state => {
-      return { message: 'Fred' }
+    this.setState(
+      { message: 'Fred' }
+    )
+  }
+
+  handleButton (key) {
+    this.model.processKey(key)
+    this.setState({
+      input: this.model.value,
+      stackDisp: this.model.stack.toString()
     })
   }
 
@@ -36,13 +53,14 @@ export default class App extends React.Component {
           actions={[{ title: 'Settings', icon: require('./src/assets/ic_menu_preferences.png'), show: 'always' }]}
           titleColor='white'
           onActionSelected={this.onActionSelected.bind(this)} />
-        <CalcStackDisplay />
-        <CalcInputArea />
+        <CalcStackDisplay stack={this.state.stackDisp} />
+        <CalcInputArea value={this.state.input} />
         <View flex={1.0} flexDirection='column' marginTop={5}>
-          <CalcButtonDisplay buttons={['C', 'D', 'E', 'F', '*']} />
-          <CalcButtonDisplay buttons={['8', '9', 'A', 'B', '/']} />
-          <CalcButtonDisplay buttons={['4', '5', '6', '7', '+']} />
-          <CalcButtonDisplay buttons={['1', '2', '3', '4', '-']} />
+          <CalcButtonDisplay buttons={['C', 'D', 'E', 'F', '*']} onPress={this.handleButton.bind(this)} />
+          <CalcButtonDisplay buttons={['8', '9', 'A', 'B', '/']} onPress={this.handleButton.bind(this)} />
+          <CalcButtonDisplay buttons={['4', '5', '6', '7', '+']} onPress={this.handleButton.bind(this)} />
+          <CalcButtonDisplay buttons={['1', '2', '3', '4', '-']} onPress={this.handleButton.bind(this)} />
+          <CalcButtonDisplay buttons={['=']} onPress={this.handleButton.bind(this)} />
         </View>
       </View>
     )
@@ -63,113 +81,3 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch'
   }
 })
-
-/*
-  "alignContent",
-  "alignItems",
-  "alignSelf",
-  "aspectRatio",
-  "backfaceVisibility",
-  "backgroundColor",
-  "borderBottomColor",
-  "borderBottomEndRadius",
-  "borderBottomLeftRadius",
-  "borderBottomRightRadius",
-  "borderBottomStartRadius",
-  "borderBottomWidth",
-  "borderColor",
-  "borderEndColor",
-  "borderEndWidth",
-  "borderLeftColor",
-  "borderLeftWidth",
-  "borderRadius",
-  "borderRightColor",
-  "borderRightWidth",
-  "borderStartColor",
-  "borderStartWidth",
-  "borderStyle",
-  "borderTopColor",
-  "borderTopEndRadius",
-  "borderTopLeftRadius",
-  "borderTopRightRadius",
-  "borderTopStartRadius",
-  "borderTopWidth",
-  "borderWidth",
-  "bottom",
-  "color",
-  "decomposedMatrix",
-  "direction",
-  "display",
-  "elevation",
-  "end",
-  "flex",
-  "flexBasis",
-  "flexDirection",
-  "flexGrow",
-  "flexShrink",
-  "flexWrap",
-  "fontFamily",
-  "fontSize",
-  "fontStyle",
-  "fontVariant",
-  "fontWeight",
-  "height",
-  "includeFontPadding",
-  "justifyContent",
-  "left",
-  "letterSpacing",
-  "lineHeight",
-  "margin",
-  "marginBottom",
-  "marginEnd",
-  "marginHorizontal",
-  "marginLeft",
-  "marginRight",
-  "marginStart",
-  "marginTop",
-  "marginVertical",
-  "maxHeight",
-  "maxWidth",
-  "minHeight",
-  "minWidth",
-  "opacity",
-  "overflow",
-  "overlayColor",
-  "padding",
-  "paddingBottom",
-  "paddingEnd",
-  "paddingHorizontal",
-  "paddingLeft",
-  "paddingRight",
-  "paddingStart",
-  "paddingTop",
-  "paddingVertical",
-  "position",
-  "resizeMode",
-  "right",
-  "rotation",
-  "scaleX",
-  "scaleY",
-  "shadowColor",
-  "shadowOffset",
-  "shadowOpacity",
-  "shadowRadius",
-  "start",
-  "textAlign",
-  "textAlignVertical",
-  "textDecorationColor",
-  "textDecorationLine",
-  "textDecorationStyle",
-  "textShadowColor",
-  "textShadowOffset",
-  "textShadowRadius",
-  "tintColor",
-  "top",
-  "transform",
-  "transformMatrix",
-  "translateX",
-  "translateY",
-  "width",
-  "writingDirection",
-  "zIndex"
- */
