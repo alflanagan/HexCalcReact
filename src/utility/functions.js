@@ -2,7 +2,7 @@
  * utility/functions.js
  * A module of useful (?) general-purpose functions
  */
-import { keys, lt } from 'ramda'
+import { keys } from 'ramda'
 // big-integer doesn't support standard modules (yet)
 const bigInt = require('big-integer')
 
@@ -45,34 +45,59 @@ export function objToString (something) {
   return something.toString()
 }
 
+/**
+ * Get the two's complement of [value], assuming a word size of [numbits].
+ * @param  {integer} numbits word size of the binary value (two's complement only makes sense for
+ *                   finite word sizes)
+ * @param  {bigInt} value   a bigInt
+ * @return {bigInt}         two's complement of value
+ */
+export function bigIntTwosComplement (numbits, value) {
+  if (typeof numbits !== 'number' || !bigInt.isInstance(value)) {
+    throw new TypeError('bigIntAsIntN requires a number and a bigInt')
+  }
+  const twoToNth = bigInt(2).pow(numbits)
+  // two's complement = complement with respect to 2^n
+  return twoToNth.minus(value).mod(twoToNth)
+}
+
+/**
+ * Truncate a signed bigInt to fit into [numbits] word size.
+ *
+ * For negative values we get the two's complement, then truncate that.
+ *
+ * @param  {Number} numbits Integer word size of the returned value
+ * @param  {bigInt} value   A signed value to truncate to the given size
+ * @return {bigInt}         Truncated value
+ */
 export function bigIntAsIntN (numbits, value) {
   if (typeof numbits !== 'number' || !bigInt.isInstance(value)) {
     throw new TypeError('bigIntAsIntN requires a number and a bigInt')
   }
-  if (lt(0, value)) {
+  if (value.greaterOrEquals(0)) {
     return value.mod(bigInt(2).pow(numbits))
   } else {
-    // get positive number from truncating to 1 fewer bits than numbits
-    const positive = value.abs().mod(bigInt(2).pow(numbits - 1))
-    // get the two's complement of that value
-    // convert number to array of 1s and 0s
-    const bits = positive.toArray(2).value
-    // pad number with 0s to numbits
-    const padZeros = numbits - bits.length
-    const padding = arrayOf(padZeros, 0)
-    const bitArray = padding.concat(bits)
-    if (bitArray.length !== numbits) {
-      throw new Error('Created a bitArray of wrong length -- this is a bug!')
-    }
-    const onesComp = Array(bitArray.length)
-    for (let i = 0; i < numbits; i++) {
-      onesComp[i] = bitArray[i] === 0 ? 1 : 0
-    }
-    let bigOnesComp = bigInt.fromArray(onesComp, 2)
-    return bigOnesComp.plus(1)
+    const twosComp = bigIntTwosComplement(value.bitLength() + 1, value)
+    return twosComp.mod(bigInt(2).pow(numbits))
   }
 }
 
+/**
+ * Truncate a positive bigInt to fit into [numbits] word size.
+ *
+ * Currently does not handle negative values. Caller should explicitly take absolute value or
+ * two's complement first, whatever suits their use case.
+ *
+ * @param  {Number} numbits Integer word size of the returned value
+ * @param  {bigInt} value   A positive value to truncate to the given size
+ * @return {bigInt}         Truncated value
+ */
 export function bigIntAsUintN (numbits, value) {
-  return value.abs().mod(bigInt(2).pow(numbits))
+  if (typeof numbits !== 'number' || !bigInt.isInstance(value)) {
+    throw new TypeError('bigIntAsIntN requires a number and a bigInt')
+  }
+  if (value.lt(0)) {
+    throw new RangeError('bigIntAsIntN() got negative number')
+  }
+  return value.mod(bigInt(2).pow(numbits))
 }

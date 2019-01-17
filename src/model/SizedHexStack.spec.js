@@ -2,6 +2,7 @@
  * Unit testing for SizedHexStack.js
  */
 import SizedHexStack from './SizedHexStack'
+const bigInt = require('big-integer')
 
 /**
  * Retrieve values from the stack into an array to allow easy comparison to expected values.
@@ -54,28 +55,27 @@ test('I can create a stack from an array of strings.', () => {
 
 test('Creating a stack fails if iterator returns neither a number or string.', () => {
   const newStack = Object.create(SizedHexStack)
-  expect(() => { newStack.init([{ value: '1234' }], true, 23) }).toThrow(TypeError)
+  expect(() => { newStack.init([{ value: '1234' }], true, 23) }).toThrow(Error)
 })
 
 test('Creating a stack fails if given a non-hexadecimal string.', () => {
   const newStack = Object.create(SizedHexStack)
-  expect(() => { newStack.init(['FACE', 'NOTHEX'], false, 8) }).toThrow(SyntaxError)
+  expect(() => { newStack.init(['FACE', 'NOTHEX'], false, 8) }).toThrow(Error)
 })
 
 test('I can push and pop a large value.', () => {
   const newStack = Object.create(SizedHexStack).init([], false, 128)
-  const testVal = BigInt('0xAB43890FED123421187843')
+  const testVal = '0xAB43890FED123421187843'
   newStack.push(testVal)
-  expect(newStack.pop()).toEqual(testVal)
+  expect(newStack.pop()).toEqual(bigInt(testVal.slice(2), 16))
   expect(newStack.size()).toEqual(0)
 })
 
-test('A signed stack can return negative numbers', () => {
+test('A signed stack returns the twos complement of negative numbers', () => {
   const stack = Object.create(SizedHexStack).init([-5], true, 16)
-  expect(stack.pop().toString(16)).toEqual('-5')
+  expect(stack.pop().toString(16)).toEqual('fffb')
 })
 
-test('An unsigned stack returns twos-comlement of negative numbers', () => {
-  const stack = Object.create(SizedHexStack).init([-5], false, 16)
-  expect(stack.pop().toString(16)).toEqual('fffb')
+test('An unsigned stack barfs on negative numbers', () => {
+  expect(() => Object.create(SizedHexStack).init([-5], false, 16)).toThrow(RangeError)
 })

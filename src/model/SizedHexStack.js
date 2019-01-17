@@ -5,13 +5,11 @@
  *
  * Note we use BigInt, not Number, bedcause we want to support at least 64 bits.
  */
+import { bigIntAsIntN, bigIntAsUintN, bigIntTwosComplement } from '../utility/functions'
+import HexStack from './HexStack'
 
-// Here we're explicitly using a Delegation pattern rather than Inheritance. It reflects how
-// Javascript actually implements things, unlike the "standard" use of `new` and `prototype`,
-// even with the new `class` syntax
-
-// instead of `new SizedHexStack()` say
-// `Object.create(SizedHexStack).init()`
+// instead of `new SizedHexStack(...)` say
+// `Object.create(SizedHexStack).init(...)`
 export default {
 /**
  * Set up this object.
@@ -23,9 +21,9 @@ export default {
  * @return {HexStack}              The object, set up according to params.
  */
   init (iterable, signed, bits) {
-    this.values = []
     this.signed = signed
     this.bits = bits
+    this.hexStack = Object.create(HexStack).init()
 
     if (typeof iterable !== 'undefined' && iterable !== null) {
       for (let value of iterable) {
@@ -36,68 +34,37 @@ export default {
   },
 
   toString () {
-    return this.values.map(val => BigInt.toString(val, 16)).join('\n')
+    return this.hexStack.toString()
   },
 
   pop () {
-    return this.values.length === 0 ? null : this.values.pop()
+    const value = this.hexStack.pop()
+    // negative numbers must be converted back if we are 'signed'
+    if (this.signed === false || value.greaterOrEquals(0)) {
+      return value
+    } else {
+      return bigIntTwosComplement(value)
+    }
   },
 
   push (value) {
-    const _ = (num) => this.signed ? BigInt.asIntN(this.bits, num) : BigInt.asUintN(this.bits, num)
-    switch (typeof value) {
-      case 'bigint':
-        this.values.push(_(value))
-        break
-      case 'number': // throws RangeError if not an int (fractional part == 0)
-        this.values.push(_(BigInt(value)))
-        break
-      case 'string': // throws SyntaxError if not valid integer
-        // assumes string in hexadecimal format, even if not explicit
-        if (!(value.startsWith('0x') || value.startsWith('0X'))) {
-          value = `0x${value}`
-        }
-        this.values.push(_(BigInt(value)))
-        break
-      default:
-        throw new TypeError(`HexStack doesn't know how to accept ${value}.`)
-    }
+    // we have to convert to bigInt first
+    const bigValue = this.hexStack._makeBigInt(value)
+    // so we can do truncation
+    const newValue = this.signed ? bigIntAsIntN(this.bits, bigValue) : bigIntAsUintN(this.bits, bigValue)
+    this.hexStack.push(newValue)
   },
 
   op (operator) {
-    let a, b
-    switch (operator) {
-      case '+':
-        this.push(this.pop() + this.pop())
-        break
-      case '-':
-        a = this.pop()
-        b = this.pop()
-        this.push(b - a)
-        break
-      case '*':
-        this.push(this.pop() * this.pop())
-        break
-      case '/':
-        a = this.pop()
-        b = this.pop()
-        this.push(b / a)
-        break
-      case '%':
-        a = this.pop()
-        b = this.pop()
-        this.push(b % a)
-        break
-      default:
-        throw new RangeError(`Operator not recognized: '${operator}'`)
-    }
+    // I think this will work the same
+    this.hexStack.op(operator)
   },
 
   clear () {
-    this.values.clear()
+    this.hexStack.clear()
   },
 
   size () {
-    return this.values.length
+    return this.hexStack.size()
   }
 }
